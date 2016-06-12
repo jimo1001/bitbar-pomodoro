@@ -44,6 +44,10 @@ function notify {
     osascript -e "display notification \"$1\" with title \"$MENUBAR_LOGO Pomodoro\"" &> /dev/null
 }
 
+function dialog {
+    osascript -e "display alert \"$1\" message \"$2\""
+}
+
 function getReminderTitle {
     if [ ! -n "$REMINDER_TITLE" -a -n "$REMINDER_URI" ]; then
         REMINDER_TITLE=$(osascript -lJavaScript -e "Application('Reminders').reminders.byId(\"$REMINDER_URI\").name()")
@@ -64,7 +68,7 @@ function startLongBreak {
 
 function finishBreak {
     changeStatus "0"
-    notify "Break time finished"
+    notify "Break time is finished"
 }
 
 function startPomodoro {
@@ -142,6 +146,7 @@ var e = new cApp.Event({
 cApp.calendars.byName("$CALENDAR").events.push(e);
 EOF
         fi
+        dialog "Pomodoro Work is Finished." "Please Take a Short Break."
         startShortBreak
     fi
     displayTime "$TIME_LEFT" "black"
